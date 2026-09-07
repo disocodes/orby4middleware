@@ -5,28 +5,28 @@ orby4middleware setup is intentionally idempotent. Re-running setup must not bli
 ## Linux
 
 ```bash
-./scripts/setup.sh
+bash scripts/setup.sh
 ```
 
 Preview decisions without changing anything:
 
 ```bash
-./scripts/setup.sh --dry-run
+bash scripts/setup.sh --dry-run
 ```
 
 Enable optional services:
 
 ```bash
-./scripts/setup.sh --profile imaging
-./scripts/setup.sh --profile fhir
-./scripts/setup.sh --profile imaging --profile fhir
+bash scripts/setup.sh --profile imaging
+bash scripts/setup.sh --profile fhir
+bash scripts/setup.sh --profile imaging --profile fhir
 ```
 
 Reuse an externally managed resource:
 
 ```bash
-./scripts/setup.sh --skip-service postgres
-./scripts/setup.sh --profile imaging --skip-service orthanc
+bash scripts/setup.sh --skip-service postgres
+bash scripts/setup.sh --profile imaging --skip-service orthanc
 ```
 
 When skipping PostgreSQL, configure `ORBY_DATABASE_URL`/`.env` to point at the external database before starting the Orby service.
@@ -34,7 +34,7 @@ When skipping PostgreSQL, configure `ORBY_DATABASE_URL`/`.env` to point at the e
 Apply changed Compose definitions intentionally:
 
 ```bash
-./scripts/setup.sh --reconcile
+bash scripts/setup.sh --reconcile
 ```
 
 ## Windows PowerShell
