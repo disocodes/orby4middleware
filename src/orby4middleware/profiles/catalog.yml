@@ -1,0 +1,157 @@
+version: 1
+validation_statuses: [experimental, vendor-documented, validated-lab]
+
+manufacturers:
+  laboratory:
+    - Mindray
+    - Sysmex
+    - Beckman Coulter
+    - Abbott
+    - Roche
+    - Siemens Healthineers
+    - HORIBA
+    - Nihon Kohden
+    - Boule
+    - Diatron
+    - Erba
+    - DIRUI
+    - URIT
+    - Genrui
+    - EDAN
+    - Stago
+    - Werfen / Instrumentation Laboratory
+    - bioMérieux
+    - BD
+    - Cepheid
+    - Radiometer
+    - ARKRAY
+    - Tosoh
+    - Snibe
+    - Autobio
+    - Rayto
+    - HUMAN
+    - Randox
+    - Agappe
+    - Transasia
+    - Generic / Other
+  imaging:
+    - GE HealthCare
+    - Philips
+    - Siemens Healthineers
+    - Canon Medical
+    - Fujifilm
+    - Carestream
+    - Agfa
+    - Samsung Medison
+    - Esaote
+    - Shimadzu
+    - Hitachi
+    - Leica Biosystems
+    - Generic DICOM
+
+profiles:
+  - id: mindray-bc3000plus-serial-v1
+    manufacturer: Mindray
+    model: BC-3000 Plus
+    category: hematology
+    parser: mindray-bc3000plus
+    protocol: proprietary-rs232
+    validation_status: vendor-documented
+    notes: "Field boundaries require verification against exact firmware/interface documentation at each site."
+    config:
+      sample_prefix: "A"
+      accession_slice: [1, 9]
+      fields:
+        - {code: WBC, display: White blood cells, start: 9, end: 14, unit: "10^9/L", loinc: "6690-2"}
+        - {code: RBC, display: Red blood cells, start: 14, end: 19, unit: "10^12/L", loinc: "789-8"}
+        - {code: HGB, display: Hemoglobin, start: 19, end: 24, unit: "g/L", loinc: "718-7"}
+        - {code: HCT, display: Hematocrit, start: 24, end: 29, unit: "%", loinc: "4544-3"}
+        - {code: MCV, display: Mean corpuscular volume, start: 29, end: 34, unit: "fL", loinc: "787-2"}
+        - {code: MCH, display: Mean corpuscular hemoglobin, start: 34, end: 39, unit: "pg", loinc: "785-6"}
+        - {code: MCHC, display: Mean corpuscular hemoglobin concentration, start: 39, end: 44, unit: "g/L", loinc: "786-4"}
+        - {code: PLT, display: Platelets, start: 44, end: 49, unit: "10^9/L", loinc: "777-3"}
+
+  - id: generic-astm-analyzer
+    manufacturer: Generic / Other
+    model: ASTM analyzer
+    category: laboratory
+    parser: astm
+    protocol: ASTM-style
+    validation_status: experimental
+    config:
+      accession_candidate_indexes: [2, 3]
+
+  - id: generic-hl7-oru-analyzer
+    manufacturer: Generic / Other
+    model: HL7 v2 ORU analyzer
+    category: laboratory
+    parser: hl7-oru
+    protocol: HL7v2-MLLP
+    validation_status: experimental
+
+  - id: generic-serial-delimited
+    manufacturer: Generic / Other
+    model: Delimited serial device
+    category: laboratory
+    parser: generic-delimited
+    protocol: proprietary-rs232
+    validation_status: experimental
+    config:
+      record_separator: "\\r"
+      field_separator: "|"
+      sample_record: "S"
+      accession_index: 1
+      result_record: "R"
+      code_index: 1
+      value_index: 2
+      unit_index: 3
+      flag_index: 4
+
+  - id: generic-serial-fixed-width
+    manufacturer: Generic / Other
+    model: Fixed-width serial device
+    category: laboratory
+    parser: generic-fixed-width
+    protocol: proprietary-rs232
+    validation_status: experimental
+    config:
+      accession_slice: [0, 8]
+      fields: []
+
+  - id: generic-serial-regex
+    manufacturer: Generic / Other
+    model: Regex-configured serial device
+    category: laboratory
+    parser: generic-regex
+    protocol: proprietary-rs232
+    validation_status: experimental
+    config:
+      accession_regex: "SAMPLE=([A-Za-z0-9_-]+)"
+      result_regex: "(?P<code>[A-Za-z0-9_-]+)=(?P<value>[^,\\r\\n]+)(?:,(?P<unit>[^,\\r\\n]+))?"
+
+  - id: generic-rest-json
+    manufacturer: Generic / Other
+    model: REST/JSON device
+    category: laboratory
+    parser: generic-regex
+    protocol: REST-JSON
+    validation_status: experimental
+    notes: "Use normalized ingest endpoint directly for API-native devices; parser entry is catalog-only."
+
+  - id: generic-fhir-device
+    manufacturer: Generic / Other
+    model: FHIR-capable device/platform
+    category: laboratory
+    parser: hl7-oru
+    protocol: FHIR-R4
+    validation_status: experimental
+    notes: "FHIR-native ingestion adapter is a roadmap boundary; normalized ingest is available now."
+
+  - id: generic-dicom-modality
+    manufacturer: Generic DICOM
+    model: DICOM modality
+    category: imaging
+    parser: hl7-oru
+    protocol: DICOM-DICOMweb
+    validation_status: experimental
+    notes: "Use Orthanc for DICOM storage/DICOMweb; HL7/FHIR worklist/report linkage is configured separately."
