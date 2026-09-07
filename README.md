@@ -91,8 +91,8 @@ The catalog contains common manufacturers such as Mindray, Sysmex, Beckman Coult
 Linux:
 
 ```bash
-./scripts/setup.sh --dry-run
-./scripts/setup.sh
+bash scripts/setup.sh --dry-run
+bash scripts/setup.sh
 ```
 
 Windows PowerShell:
@@ -138,17 +138,17 @@ The default Compose stack runs the Orby API plus PostgreSQL. Optional components
 
 ```bash
 # Include Orthanc for DICOM/DICOMweb
-./scripts/setup.sh --profile imaging
+bash scripts/setup.sh --profile imaging
 
 # Include HAPI FHIR JPA as a standalone FHIR endpoint
-./scripts/setup.sh --profile fhir
+bash scripts/setup.sh --profile fhir
 ```
 
 Existing infrastructure can be reused instead of duplicated, for example:
 
 ```bash
-./scripts/setup.sh --skip-service postgres
-./scripts/setup.sh --profile imaging --skip-service orthanc
+bash scripts/setup.sh --skip-service postgres
+bash scripts/setup.sh --profile imaging --skip-service orthanc
 ```
 
 Open Integration Engine is intentionally documented as an external/optional integration-engine peer rather than embedded into the Python package. See `docs/ARCHITECTURE.md`.
