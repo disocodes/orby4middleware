@@ -133,19 +133,23 @@ profiles:
     manufacturer: Generic / Other
     model: REST/JSON device
     category: laboratory
-    parser: generic-regex
+    parser: json-result
     protocol: REST-JSON
     validation_status: experimental
-    notes: "Use normalized ingest endpoint directly for API-native devices; parser entry is catalog-only."
+    config:
+      accession_field: accession
+      results_field: results
+      observed_at_field: observed_at
+    notes: "Accepts common structured JSON result payloads and can be remapped per device."
 
   - id: generic-fhir-device
     manufacturer: Generic / Other
     model: FHIR-capable device/platform
     category: laboratory
-    parser: hl7-oru
+    parser: fhir-bundle
     protocol: FHIR-R4
     validation_status: experimental
-    notes: "FHIR-native ingestion adapter is a roadmap boundary; normalized ingest is available now."
+    notes: "Accepts FHIR Bundles containing Observation resources and an accession identifier."
 
   - id: generic-dicom-modality
     manufacturer: Generic DICOM
