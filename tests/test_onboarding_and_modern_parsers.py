@@ -80,3 +80,29 @@ def test_fhir_bundle_parser():
     assert result.accession == "ACC-9"
     assert result.observations[0].loinc == "6690-2"
     assert result.observations[0].value == 6.2
+
+
+def test_field_override_preserves_catalog_metadata_by_code():
+    base = {
+        "id": "x",
+        "config": {
+            "fields": [
+                {
+                    "code": "HGB",
+                    "display": "Hemoglobin",
+                    "scale": 0.1,
+                    "start": 10,
+                    "end": 15,
+                }
+            ]
+        },
+    }
+    got = effective_profile(
+        base,
+        {"parser_config": {"fields": [{"code": "HGB", "start": 11, "end": 16}]}},
+    )
+    field = got["config"]["fields"][0]
+    assert field["display"] == "Hemoglobin"
+    assert field["scale"] == 0.1
+    assert field["start"] == 11
+    assert field["end"] == 16
