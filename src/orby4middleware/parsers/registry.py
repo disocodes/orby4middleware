@@ -4,6 +4,8 @@ from .generic import parse_delimited, parse_fixed_width, parse_regex
 from .astm import parse_astm
 from .hl7 import parse_hl7_oru
 from .mindray_bc3000plus import parse_bc3000plus
+from .json_api import parse_json_result
+from .fhir import parse_fhir_bundle
 
 BUILTINS = {
     "generic-delimited": parse_delimited,
@@ -12,10 +14,12 @@ BUILTINS = {
     "astm": parse_astm,
     "hl7-oru": parse_hl7_oru,
     "mindray-bc3000plus": parse_bc3000plus,
+    "json-result": parse_json_result,
+    "fhir-bundle": parse_fhir_bundle,
 }
 
 
-def parse_with_profile(payload: bytes | str, profile: dict, *, device_key: str) -> NormalizedResult:
+def parse_with_profile(payload, profile: dict, *, device_key: str) -> NormalizedResult:
     parser_name = profile.get("parser", "")
     if parser_name in BUILTINS:
         return BUILTINS[parser_name](payload, profile=profile, device_key=device_key)
