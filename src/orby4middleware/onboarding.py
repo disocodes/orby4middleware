@@ -19,6 +19,25 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
     return out
 
 
+def _merge_parser_config(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    """Deep-merge parser config and preserve catalog field metadata by result code."""
+    out = _deep_merge(base, {k: v for k, v in (override or {}).items() if k != "fields"})
+    if "fields" in (override or {}):
+        base_fields = {
+            str(item.get("code")): item
+            for item in (base.get("fields") or [])
+            if isinstance(item, dict) and item.get("code")
+        }
+        merged_fields = []
+        for item in override.get("fields") or []:
+            if not isinstance(item, dict):
+                continue
+            code = str(item.get("code") or "")
+            merged_fields.append(_deep_merge(base_fields.get(code, {}), item))
+        out["fields"] = merged_fields
+    return out
+
+
 def effective_profile(
     base_profile: dict[str, Any],
     device_config: dict[str, Any] | None,
@@ -28,9 +47,9 @@ def effective_profile(
     """Build the runtime parser profile without mutating the catalog profile."""
     profile = deepcopy(base_profile)
     saved = (device_config or {}).get("parser_config") or {}
-    merged = _deep_merge(profile.get("config", {}) or {}, saved)
+    merged = _merge_parser_config(profile.get("config", {}) or {}, saved)
     if parser_config_override:
-        merged = _deep_merge(merged, parser_config_override)
+        merged = _merge_parser_config(merged, parser_config_override)
     profile["config"] = merged
     return profile
 
