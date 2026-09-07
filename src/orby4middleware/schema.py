@@ -43,8 +43,34 @@ class DeviceIn(BaseModel):
     manufacturer: str
     model: str
     profile_id: str
-    validation_status: str = "experimental"
+    validation_status: str | None = None
     config: dict[str, Any] = Field(default_factory=dict)
+
+
+class DeviceConfigurationIn(BaseModel):
+    connection: dict[str, Any] | None = None
+    parser_config: dict[str, Any] | None = None
+    mapping: dict[str, dict[str, Any]] | None = None
+    delivery: dict[str, Any] | None = None
+
+
+class ParsePreviewIn(BaseModel):
+    payload: Any
+    parser_config: dict[str, Any] | None = None
+    mapping: dict[str, dict[str, Any]] | None = None
+    record_success: bool = True
+
+
+class DeviceValidationIn(BaseModel):
+    status: str
+    validated_by: str | None = None
+    notes: str | None = None
+
+
+class DeliverySettingsIn(BaseModel):
+    enabled: bool = False
+    target_type: str = ""
+    target: str = ""
 
 
 class DeliveryRequest(BaseModel):
